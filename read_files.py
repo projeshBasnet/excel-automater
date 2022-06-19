@@ -12,7 +12,6 @@ class WriteToExcel:
         self.column_start_range = column_start_range
         self.column_end_range = column_end_range
         self.student_id_column = student_id_column
-
         self.column_array_range = self.create_column_array()
         self.work_book = openpyxl.load_workbook(self.file_name)
         self.sheet = self.work_book[self.sheet_name]

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, flash, render_template, request, redirect
 import os
 from read_files import WriteToExcel, ReadFromExcel
 import json
@@ -6,24 +6,23 @@ from time import time
 
 app = Flask(__name__)
 
+app.secret_key = "a secret key"
+
 @app.route("/", methods=['GET', 'POST'])
 def home():
-    if request.method=="GET":
-        return render_template("index.html")
-    else:
+    error = None
+    if request.method=="POST":
         excel_file_name = request.form.get("filename")
         final_sheet_name = request.form.get("final_sheet_name")
         start_depth = request.form.get("start_depth")
         end_depth = request.form.get("end_depth")
         col_start_range = request.form.get("col_start_range").upper()
         col_end_range = request.form.get("col_end_range").upper()
-        print(f"col_end_range: {col_end_range}")
         student_col = request.form.get("student_col").upper()
         student_folder = request.form.get("student_folder")
         student_marks_dict = request.form.get("student_marks_dict")
-
-        print(f"before converting into json: {student_marks_dict}")
-        student_marks_dict = json.loads(student_marks_dict)
+        if len(student_marks_dict)>0:
+            student_marks_dict = json.loads(student_marks_dict)
 
         print(f"after converring student_marks_dict: {student_marks_dict}")
         
@@ -59,15 +58,19 @@ def home():
                 read_student_directory.read_folder()
                 print(f"Time taken to run write to excel is {time()-init}")
 
-                return "sucessfully completed the writing to the excel file"
+                flash(f"Marks has been sucessfully written in the excel file")
+                return redirect("/")
 
             except Exception as e:
-                print(f"error is  {e}")
-                return f"Start depth and end depth value must be a integer"
+                error = e
+                # print(f"error is  {e}")
+                # return f"Start depth and end depth value must be a integer"
             
         else:
-            return f"The provided file or folder path is could not be found in your machine"
+            error =  f"The provided file or folder path  could not be found in your machine"
 
+    return render_template("index.html", error=error)
+       
 
         
 

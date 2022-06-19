@@ -1,74 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
 </head>
+
 <body>
-    <div class="container">
-        <form method="post" class="mt-4">
-            <h3>Field for Excel File Section </h3>
-            <div class="mb-3">
-              <label for="filename" class="form-label">File Name</label>
-              <input type="text" class="form-control" id="filename" placeholder="Filename Here" name="filename">
-            </div>
-            
-            <div class="mb-3">
-              <label for="sheetname" class="form-label">Sheet Name</label>
-              <input type="text" class="form-control" id="sheetname" placeholder="Sheet Name" name="final_sheet_name"> 
-            </div>
+  <div class="container">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul class=flashes>
+      {% for message in messages %}
+      <li class="text-primary">{{ message }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
 
-            <div class="mb-3">
-                <label for="startdepth" class="form-label">Sheet Start Depth</label>
-                <input type="text" class="form-control" id="startdepth" placeholder="Sheet Start Depth" name="start_depth">
-              </div> 
-            
-              <div class="mb-3">
-                <label for="enddepth" class="form-label">Sheet End Depth</label>
-                <input type="text" class="form-control" id="enddepth" placeholder="Sheet Start Depth" name="end_depth">
-              </div>
+    {% if error %}
+    <p class="error text-danger"><strong>Error:</strong> {{ error }}
+      {% endif %}
+    <form method="post" class="mt-4">
+      <h3>Field for Excel File Section </h3>
+      <div class="mb-3">
+        <label for="filename" class="form-label">File Name</label>
+        <input type="text" class="form-control" id="filename" placeholder="Filename Here" name="filename">
+      </div>
 
-              
-              <div class="mb-3">
-                <label for="column_start_range" class="form-label">Column Start Range</label>
-                <input type="text" class="form-control" id="column_start_range" placeholder="Column Start Range Eg: A, B" name="col_start_range">
-              </div>
+      <div class="mb-3">
+        <label for="sheetname" class="form-label">Sheet Name</label>
+        <input type="text" class="form-control" id="sheetname" placeholder="Sheet Name" name="final_sheet_name">
+      </div>
 
-              <div class="mb-3">
-                <label for="column_end_range" class="form-label">Column End Range</label>
-                <input type="text" class="form-control" id="column_end_range" placeholder="Column End Range Eg: A, B" name="col_end_range">
-              </div>
+      <div class="mb-3">
+        <label for="startdepth" class="form-label">Sheet Start Depth</label>
+        <input type="text" class="form-control" id="startdepth" placeholder="Sheet Start Depth" name="start_depth">
+      </div>
 
-              <div class="mb-3">
-                <label for="student_id_column" class="form-label">Student Id Column</label>
-                <input type="text" class="form-control" id="student_id_column" placeholder="Column End Range Eg: A, B" name="student_col">
-              </div>
+      <div class="mb-3">
+        <label for="enddepth" class="form-label">Sheet End Depth</label>
+        <input type="text" class="form-control" id="enddepth" placeholder="Sheet Start Depth" name="end_depth">
+      </div>
 
-              
-              <h3 class="mt-4">Field for Student Folder Section </h3>
 
-              <div class="mb-3">
-                <label for="student_folder_path" class="form-label">Student Folder Path</label>
-                <input type="text" class="form-control" id="student_folder_path" placeholder="Provide Folder Path" name="student_folder">
-              </div>
+      <div class="mb-3">
+        <label for="column_start_range" class="form-label">Column Start Range</label>
+        <input type="text" class="form-control" id="column_start_range" placeholder="Column Start Range Eg: A, B"
+          name="col_start_range">
+      </div>
 
-              <div class="mb-3">
-                <label for="student_marks_dict" class="form-label">Student  Marks Dict</label>
-                <input type="text" class="form-control" id="student_marks_dict" placeholder="Provide The Marks DIct in Dictonary Format" name="student_marks_dict">
-              </div>
+      <div class="mb-3">
+        <label for="column_end_range" class="form-label">Column End Range</label>
+        <input type="text" class="form-control" id="column_end_range" placeholder="Column End Range Eg: A, B"
+          name="col_end_range">
+      </div>
 
-              <div class="mb-3">
-                <label for="student_sheet_name" class="form-label">Student Sheet Name</label>
-                <input type="text" class="form-control" id="student_sheet_name" placeholder="Provide Excel Sheet Name" name="student_sheet_name">
-              </div>
+      <div class="mb-3">
+        <label for="student_id_column" class="form-label">Student Id Column</label>
+        <input type="text" class="form-control" id="student_id_column" placeholder="Column End Range Eg: A, B"
+          name="student_col">
+      </div>
 
-            <button type="submit" class="btn btn-primary mb-4">Submit</button>
-          </form>
-    </div>
-    
+
+      <h3 class="mt-4">Field for Student Folder Section </h3>
+
+      <div class="mb-3">
+        <label for="student_folder_path" class="form-label">Student Folder Path</label>
+        <input type="text" class="form-control" id="student_folder_path" placeholder="Provide Folder Path"
+          name="student_folder">
+      </div>
+
+      <div class="mb-3">
+        <label for="student_marks_dict" class="form-label">Student Marks Dict</label>
+        <input type="text" class="form-control" id="student_marks_dict"
+          placeholder="Provide The Marks DIct in Dictonary Format" name="student_marks_dict">
+      </div>
+
+      <div class="mb-3">
+        <label for="student_sheet_name" class="form-label">Student Sheet Name</label>
+        <input type="text" class="form-control" id="student_sheet_name" placeholder="Provide Excel Sheet Name"
+          name="student_sheet_name">
+      </div>
+
+      <button type="submit" class="btn btn-primary mb-4">Submit</button>
+    </form>
+  </div>
+
 </body>
+
 </html>
