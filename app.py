@@ -33,9 +33,12 @@ def home():
 
         if is_file and is_dir:
             try:
+                print("inside try block")
                 start_depth = int(start_depth)
                 end_depth = int(end_depth)
+               
                 # inatilzing a class for a write to excel file
+                print("initilizing class now")
                 write_excel = WriteToExcel(
                     file_name=excel_file_name,
                     sheet_name=final_sheet_name,
@@ -54,6 +57,7 @@ def home():
                     excel_object=write_excel
                 )
 
+                print("Initilized the two classes")
                 init = time()
                 read_student_directory.read_folder()
                 print(f"Time taken to run write to excel is {time()-init}")
@@ -63,8 +67,8 @@ def home():
 
             except Exception as e:
                 error = e
-                # print(f"error is  {e}")
-                # return f"Start depth and end depth value must be a integer"
+                print(f"error is  {e}")
+                return f"Start depth and end depth value must be a integer"
             
         else:
             error =  f"The provided file or folder path  could not be found in your machine"

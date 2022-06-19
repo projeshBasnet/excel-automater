@@ -11,6 +11,8 @@ class WriteToExcel:
         self.end_depth = end_depth
         self.column_start_range = column_start_range
         self.column_end_range = column_end_range
+        self.iterating_range = [i for i in range(self.start_depth, self.end_depth+1)]
+        print(f"self.iterating_range: {self.iterating_range}")
         self.student_id_column = student_id_column
         self.column_array_range = self.create_column_array()
         self.work_book = openpyxl.load_workbook(self.file_name)
@@ -40,11 +42,16 @@ class WriteToExcel:
     
     def find_student_row_number(self, student_id):
         row_no = 0
-        for i in range(self.start_depth, self.end_depth+1):
+        print(f"student_id: {student_id}")
+        for i in self.iterating_range:
+            print("Inside for loop")
             if student_id == self.sheet[f"{self.student_id_column}{i}"].value:
                 row_no = i
+                self.iterating_range.remove(i)
+                print(f"changed iterating range: {self.iterating_range}")
+
                 break
-            
+        print(f"student row number about to be returned: {row_no}")
         return row_no
 
 
@@ -89,12 +96,15 @@ class ReadFromExcel:
         print(f"sheet marks position: {self.excel_object.sheet_marks_position}")
  
         if len(marks_value_dict.keys()) == len(self.excel_object.sheet_marks_position.keys()):
+            student_row_num = self.excel_object.find_student_row_number(student_id)
             for key, value in marks_value_dict.items():
-                student_row_num = self.excel_object.find_student_row_number(student_id)
+                # student_row_num = self.excel_object.find_student_row_number(student_id)
+                print(f"student_row_num: {student_row_num}")
                 if key in self.excel_object.sheet_marks_position:
                     self.excel_object.sheet[f"{self.excel_object.sheet_marks_position[key]}{student_row_num}"] = value
             
             self.excel_object.work_book.save(self.excel_object.file_name)
+            print(f"sucessfully saved file")
         
         else:
             print(f"Marks dict is not so valid with")
