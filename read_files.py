@@ -76,18 +76,19 @@ class ReadFromExcel:
     
     def read_from_excel_file(self, student_id,p):
         for file in p.rglob("*.xlsx"):
-                print(f"file: {file}")
-                wb = openpyxl.load_workbook(file, data_only=True)
-                ws = wb[self.sheet_name]
-                marks_value_dict = {}
-                for key, value in self.marks_dict.items():
-                    # has used this try block to convert 0 string into integer
-                    try:
-                        marks_value_dict[key] = float(ws[value].value)
-                    except ValueError:
-                        marks_value_dict[key] = 0
+            print(f"file: {file}")
+            wb = openpyxl.load_workbook(file, data_only=True)
+            ws = wb[self.sheet_name]
+            marks_value_dict = {}
+            for key, value in self.marks_dict.items():
+                # has used this try block to convert 0 string into integer
+                try:
+                    marks_value_dict[key] = float(ws[value].value)
+                except ValueError:
+                    marks_value_dict[key] = 0
 
-                self.write_to_main_docs(student_id, marks_value_dict)
+            self.write_to_main_docs(student_id, marks_value_dict)
+            break
 
     
     def write_to_main_docs(self,student_id, marks_value_dict):
