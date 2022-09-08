@@ -1,10 +1,15 @@
+from asyncore import write
 import openpyxl
 from pathlib import Path
 import os
+import logging
+
+
 from win32com import client
 from execute_pdf import merge_excel_sheet_to_pdf
-
 win32_excel = client.Dispatch("Excel.Application")
+
+
 
 
 class WriteToExcel:
@@ -45,6 +50,7 @@ class WriteToExcel:
         return my_dict
     
     def find_student_row_number(self, student_id):
+        print("inside find_student_row_number")
         row_no = 0
         print(f"student_id: {student_id}")
         for i in self.iterating_range:
@@ -55,6 +61,7 @@ class WriteToExcel:
                 print(f"changed iterating range: {self.iterating_range}")
 
                 break
+          
         print(f"student row number about to be returned: {row_no}")
         return row_no
 
@@ -67,10 +74,24 @@ class ReadFromExcel:
         self.sheet_name = sheet_name
         self.excel_object = excel_object
         self.merge_excel = merge_excel
+
+        # create a logger
+        desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
+        logging.basicConfig(filename = f'{desktop}/log_message.txt',encoding ='utf-8', level=logging.DEBUG, filemode='w',format='%(levelname)s:%(message)s')
+        self.logger = logging.getLogger("excel_writer")
+        self.logger.setLevel(logging.DEBUG)
+
+        ch = logging.StreamHandler()
+        ch.setLevel(logging.DEBUG)
+        formatter = logging.Formatter('%(levelname)s - %(message)s')
+        ch.setFormatter(formatter)
+        self.logger.addHandler(ch)
+        
+
+
+
+        print(f"self.logger: {self.logger}")
        
-
-
-    
     def read_folder(self):
         path = Path(self.folder_path)
         print(f"path: {path}")
@@ -78,8 +99,11 @@ class ReadFromExcel:
         Reading the each folder of student and taking the student id
         """
         for p in path.iterdir():
-            print("inside for loop")
-            student_id = int(os.path.basename(p).split()[0])
+            try:
+                student_id = int(os.path.basename(p).split()[0])
+            except:
+                self.logger.error(f"Folder of student {os.path.basename(p).split()[0]} does not contain student id")
+                continue
             self.read_from_excel_file(student_id, p)
 
        
@@ -127,15 +151,17 @@ class ReadFromExcel:
  
         if len(marks_value_dict.keys()) == len(self.excel_object.sheet_marks_position.keys()):
             # used try block to check if the row number  of student is correct or not
-          
+            
             student_row_num = self.excel_object.find_student_row_number(student_id)
-            for key, value in marks_value_dict.items():
-                print(f"student_row_num: {student_row_num}")
-                if key in self.excel_object.sheet_marks_position:
-                    self.excel_object.sheet[f"{self.excel_object.sheet_marks_position[key]}{student_row_num}"] = value
-            self.excel_object.work_book.save(self.excel_object.file_name)
-            print(f"sucessfully saved file")
-           
+            if student_row_num >0:
+                for key, value in marks_value_dict.items():
+                    print(f"student_row_num: {student_row_num}")
+                    if key in self.excel_object.sheet_marks_position:
+                        self.excel_object.sheet[f"{self.excel_object.sheet_marks_position[key]}{student_row_num}"] = value
+                self.excel_object.work_book.save(self.excel_object.file_name)
+                print(f"sucessfully saved file")
+            else:
+                self.logger.error(f"Error in london met id of student {student_id}")
         
         else:
             print(f"Marks dictonary is not so valid with")
