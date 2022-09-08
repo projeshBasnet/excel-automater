@@ -1,6 +1,10 @@
 import openpyxl
 from pathlib import Path
 import os
+from win32com import client
+from execute_pdf import merge_excel_sheet_to_pdf
+
+win32_excel = client.Dispatch("Excel.Application")
 
 
 class WriteToExcel:
@@ -57,58 +61,84 @@ class WriteToExcel:
 
 
 class ReadFromExcel:
-    def __init__(self, folder_path, marks_dict, sheet_name, excel_object) -> None:
+    def __init__(self, folder_path, marks_dict, sheet_name, excel_object,merge_excel) -> None:
         self.folder_path = folder_path 
         self.marks_dict = marks_dict
         self.sheet_name = sheet_name
         self.excel_object = excel_object
+        self.merge_excel = merge_excel
+       
+
 
     
     def read_folder(self):
         path = Path(self.folder_path)
+        print(f"path: {path}")
         """
         Reading the each folder of student and taking the student id
         """
         for p in path.iterdir():
+            print("inside for loop")
             student_id = int(os.path.basename(p).split()[0])
             self.read_from_excel_file(student_id, p)
+
+       
             
-    
     def read_from_excel_file(self, student_id,p):
+        print("inside read_from_excel_file")
+        excel_file = None
+        import re
+        print(f"main folder is:",str(p))
         for file in p.rglob("*.xlsx"):
-            print(f"file: {file}")
-            wb = openpyxl.load_workbook(file, data_only=True)
-            ws = wb[self.sheet_name]
-            marks_value_dict = {}
-            for key, value in self.marks_dict.items():
-                # has used this try block to convert 0 string into integer
-                try:
-                    marks_value_dict[key] = float(ws[value].value)
-                except ValueError:
-                    marks_value_dict[key] = 0
+            print(f"excel file: {file}")
+            if not re.match(r"[^~$].*",str(file)):
+                continue
+            else:
+                print(f"file in else: {file}")
+                excel_file = file
+                wb = openpyxl.load_workbook(file, data_only=True,read_only=True)
+                ws = wb[self.sheet_name]
+                marks_value_dict = {}
+                for key, value in self.marks_dict.items():
+                    # has used this try block to convert 0 string into integer
+                    try:
+                        marks_value_dict[key] = float(ws[value].value)
+                    except ValueError:
+                        marks_value_dict[key] = 0
 
-            self.write_to_main_docs(student_id, marks_value_dict)
-            break
+                self.write_to_main_docs(student_id, marks_value_dict)
+            
+            
+                print(f"active workbook: {wb.active}")
+                wb.close()
+                break
+            
+         
 
-    
+        if self.merge_excel:
+            for file in p.rglob("*.pdf"):
+                merge_excel_sheet_to_pdf(str(p),excel_file=excel_file,pdf_file=file)
+                break
+                
     def write_to_main_docs(self,student_id, marks_value_dict):
         print(f"writing to main docs of id {student_id}")
         print(f"marks_value_dict: {marks_value_dict}")
         print(f"sheet marks position: {self.excel_object.sheet_marks_position}")
  
         if len(marks_value_dict.keys()) == len(self.excel_object.sheet_marks_position.keys()):
+            # used try block to check if the row number  of student is correct or not
+          
             student_row_num = self.excel_object.find_student_row_number(student_id)
             for key, value in marks_value_dict.items():
-                # student_row_num = self.excel_object.find_student_row_number(student_id)
                 print(f"student_row_num: {student_row_num}")
                 if key in self.excel_object.sheet_marks_position:
                     self.excel_object.sheet[f"{self.excel_object.sheet_marks_position[key]}{student_row_num}"] = value
-            
             self.excel_object.work_book.save(self.excel_object.file_name)
             print(f"sucessfully saved file")
+           
         
         else:
-            print(f"Marks dict is not so valid with")
+            print(f"Marks dictonary is not so valid with")
                 
                 
 

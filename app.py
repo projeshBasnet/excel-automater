@@ -4,6 +4,7 @@ from read_files import WriteToExcel, ReadFromExcel
 import json
 from time import time
 
+
 app = Flask(__name__)
 
 app.secret_key = "a secret key"
@@ -21,6 +22,10 @@ def home():
         student_col = request.form.get("student_col").upper()
         student_folder = request.form.get("student_folder")
         student_marks_dict = request.form.get("student_marks_dict")
+        if request.form.get("merge_pdf"):
+            merge_excel_sheet = True
+        else:
+            merge_excel_sheet = False
         if len(student_marks_dict)>0:
             student_marks_dict = json.loads(student_marks_dict)
 
@@ -36,6 +41,9 @@ def home():
                 print("inside try block")
                 start_depth = int(start_depth)
                 end_depth = int(end_depth)
+
+
+                print(f"merge_excel_sheet, {merge_excel_sheet}")
                
                 # inatilzing a class for a write to excel file
                 print("initilizing class now")
@@ -54,12 +62,14 @@ def home():
                     folder_path=student_folder,
                     marks_dict=student_marks_dict,
                     sheet_name=student_sheet_name,
-                    excel_object=write_excel
+                    excel_object=write_excel,
+                    merge_excel = merge_excel_sheet
                 )
 
                 print("Initilized the two classes")
                 init = time()
                 read_student_directory.read_folder()
+
                 print(f"Time taken to run write to excel is {time()-init}")
 
                 flash(f"Marks has been sucessfully written in the excel file")
