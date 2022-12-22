@@ -3,6 +3,7 @@ import os
 from read_files import WriteToExcel, ReadFromExcel
 import json
 from time import time
+from insert_marking_template import iterate_folder
 
 
 app = Flask(__name__)
@@ -86,14 +87,24 @@ def home():
     return render_template("index.html", error=error)
        
 
+
+# @app.route("/", methods=['GET', 'POST'])
+
+@app.route("/add_excel_sheet",methods = ["GET","POST"])
+def add_excel_sheet():
+    if request.method == "POST":
+        folder_name = request.form.get("student_folder")
+        excel_sheet = request.form.get("excel_file")
+
+        iterate_folder(folder_name,excel_sheet)
+
         
+        
+    
+    return render_template("add_excel_sheet.html")
 
 
 
-
-# @app.route("/", methods=["POST"])
-# def mydata():
-#     return "Inside post request"
 
 if __name__ == "__main__":
     app.run(debug=True)

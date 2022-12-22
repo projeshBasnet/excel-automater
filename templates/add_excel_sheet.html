@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<div class="container">
+
+    <form method="post">
+        <div class="mb-3">
+            <label for="student_folder_path" class="form-label">Student Folder Path</label>
+            <input type="text" class="form-control" id="student_folder_path" placeholder="Provide Folder Path"
+                name="student_folder">
+        </div>
+        <div class="mb-3">
+            <label for="excel_file_path" class="form-label">Excel File Path</label>
+            <input type="text" class="form-control" id="excel_file_path"
+                placeholder="Provide File Path of Excel Template file" name="excel_file">
+        </div>
+        <button type="submit" class="btn btn-info">Execute</button>
+
+    </form>
+</div>
+{% endblock content %}
