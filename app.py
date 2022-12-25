@@ -4,7 +4,7 @@ from read_files import WriteToExcel, ReadFromExcel
 import json
 from time import time
 from insert_marking_template import iterate_folder
-from insert_student_marks import iterate_folder_of_inserting_marks
+from insert_student_marks import handle_insert_student_marks
 
 
 app = Flask(__name__)
@@ -105,10 +105,15 @@ def add_excel_sheet():
 @app.route("/insert_student_marks",methods = ["GET","POST"])
 def insert_student_marks():
     if request.method=="POST":
-        folder_name = request.form.get("student_folder")
-        marks_infos = request.form.get("marks_infos")
+        folder_name = request.form.get("foldername")
+        marks_infos = json.loads(request.form.get("marks_infos"))
 
+        print(f"folder_name: {folder_name}")
+        print(f"marks_infos: {marks_infos}")
+        handle_insert_student_marks(folder_name,marks_infos)
 
+        return redirect("/insert_student_marks")
+        
     return render_template("insert_student_marks.html")
 
 

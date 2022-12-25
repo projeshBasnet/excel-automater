@@ -82,6 +82,7 @@ print(f"completed changing marks of student in that folder")
 
 
 def add_marks_on_student_sheet(excel_file, marks_info):
+    print("inside add_marks_on_student_sheet")
     workbook = load_workbook(excel_file)
     sheet = workbook["Grading Sheet"]
     print(f"marks_info: {marks_info}")
