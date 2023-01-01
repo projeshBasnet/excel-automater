@@ -83,12 +83,12 @@ print(f"completed changing marks of student in that folder")
 
 def add_marks_on_student_sheet(excel_file, marks_info):
     print("inside add_marks_on_student_sheet")
+    print(f"excel_file: {excel_file}")
     workbook = load_workbook(excel_file)
     sheet = workbook["Grading Sheet"]
     print(f"marks_info: {marks_info}")
     for key, value in marks_info.items():
         print(f"value is: {value}")
-        value = json.loads(value)
         print(f"Changing the marks of cell: {key}")
         """
         it creates a marks value from a given lists randomly within a given range having spacing of 0.5

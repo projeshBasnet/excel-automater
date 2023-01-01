@@ -96,8 +96,17 @@ def add_excel_sheet():
     if request.method == "POST":
         folder_name = request.form.get("student_folder")
         excel_sheet = request.form.get("excel_file")
+        sheet_name = request.form.get("sheet_name")
+        student_name_cell = request.form.get("name_cell_value")
+        student_id_cell = request.form.get("id_cell_value")
 
-        iterate_folder(folder_name,excel_sheet)
+        cell_infos = {"name":student_name_cell,"id":student_id_cell}
+
+        print(f"cell_infos",cell_infos)
+        print(f"sheet_name",sheet_name)
+
+
+        iterate_folder(folder_name,excel_sheet,cell_infos,sheet_name)
     return render_template("add_excel_sheet.html")
 
 
